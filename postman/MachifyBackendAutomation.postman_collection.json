@@ -1,0 +1,300 @@
+{
+	"info": {
+		"_postman_id": "5b0a50f2-b386-43b0-82f1-ca375e1f600a",
+		"name": "MachifyBackendAutomation",
+		"description": "# About this collection\n\nThis collection helps you set up contract tests to ensure that two separate systems are compatible and can communicate with one another.\n\n## **Using the collection**\n\n**Step 1:** Send the sample requests and view the response and test results.\n\n**Step 2:** Replace the sample request URLs with your desired API endpoints.\n\n**Step 3:** Customize the tests in the \"Tests\" tab if needed. Don't forget to save your changes.\n\n### Resources\n\n[Scripting in Postman](https://learning.postman.com/docs/writing-scripts/intro-to-scripts/)\n\n[Test script examples](https://learning.postman.com/docs/writing-scripts/script-references/test-examples/)\n\n[Postman Sandbox API reference](https://learning.postman.com/docs/sending-requests/grpc/postman-sandbox-api/#writing-assertions)\n\n[Using the Collection Runner](https://learning.postman.com/docs/collections/running-collections/intro-to-collection-runs/)\n\n[  \n](https://postman.postman.co/documentation/24552533-5bead607-0197-4e1d-87d4-3160bc7631c1?entity=&branch=&version=)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23476360",
+		"_collection_link": "https://planetary-space-316449.postman.co/workspace/matchy-app~4497eb5d-155a-430b-a905-8737b4dfbe5d/collection/23476360-5b0a50f2-b386-43b0-82f1-ca375e1f600a?action=share&source=collection_link&creator=23476360"
+	},
+	"item": [
+		{
+			"name": "Profile Creation",
+			"item": [
+				{
+					"name": "Successful profile creation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"pm.test('Successful profile creation with valid inputs', function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.user.name).to.equal('John Doe');",
+									"    pm.expect(jsonData.user.age).to.equal('30');",
+									"    pm.expect(jsonData.user.gender).to.equal('Male');",
+									"    pm.expect(jsonData.user).to.have.property('id');",
+									"    pm.expect(jsonData.user.interests).to.equals(\"Coding, Music, Traveling\")",
+									"})",
+									"pm.test('Message indicates Successful profile creation', function () {",
+									"    pm.expect(jsonData.message).to.equal('Profile created successfully!');",
+									"})",
+									"pm.test(\"verify that age must be a number only\", function () {",
+									"    const ageToNumber = Number(jsonData.user.age)",
+									"    pm.expect(ageToNumber).to.be.a(\"number\");",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"John Doe\",\n  \"age\": \"30\",\n  \"gender\": \"Male\",\n  \"location\": \"New York\",\n  \"interests\": \"Coding, Music, Traveling\",\n  \"username\": \"johndoe\",\n  \"password\": \"password123\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://matchify-backend-theta.vercel.app/api/profile",
+							"protocol": "https",
+							"host": [
+								"matchify-backend-theta",
+								"vercel",
+								"app"
+							],
+							"path": [
+								"api",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Negative Test",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(400);",
+									"});",
+									"pm.test(\"Verify that the user is prevented from proceeding if required fields are not filled.\", function () {",
+									"    pm.expect(jsonData.error).to.eq(\"All fields are required: name, age, gender, location, interests, username, and password!\")",
+									"});",
+									"",
+									"",
+									"",
+									"",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"\",\n  \"age\": \"30\",\n  \"gender\": \"Male\",\n  \"location\": \"New York\",\n  \"interests\": \"Coding, Music, Traveling\",\n  \"username\": \"\",\n  \"password\": \"password123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://matchify-backend-theta.vercel.app/api/profile",
+							"protocol": "https",
+							"host": [
+								"matchify-backend-theta",
+								"vercel",
+								"app"
+							],
+							"path": [
+								"api",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Login",
+			"item": [
+				{
+					"name": "Negative Test",
+					"item": [
+						{
+							"name": "Empty value",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const jsonData = pm.response.json();",
+											"pm.test(\"Status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											"pm.test(\"Empty value\", function () {",
+											"    pm.expect(jsonData.error).to.eql(\"Username and password are required!\");",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"username\": \"\",\n  \"password\": \"Password1234\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://matchify-backend-theta.vercel.app/api/login",
+									"protocol": "https",
+									"host": [
+										"matchify-backend-theta",
+										"vercel",
+										"app"
+									],
+									"path": [
+										"api",
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Incorrect Credentials",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const jsonData = pm.response.json();",
+											"pm.test(\"Incorrect username \", function () {",
+											"    pm.expect(jsonData.error).to.eql(\"Invalid credentials!\");",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"username\": \"55stella\",\n  \"password\": \"Password1234\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://matchify-backend-theta.vercel.app/api/login",
+									"protocol": "https",
+									"host": [
+										"matchify-backend-theta",
+										"vercel",
+										"app"
+									],
+									"path": [
+										"api",
+										"login"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Successful login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test('Successful login with users informations returned', function () {",
+									"    pm.expect(jsonData.user.name).to.equal('John Doe');",
+									"    pm.expect(jsonData.user.age).to.equal('30');",
+									"    pm.expect(jsonData.user.gender).to.equal('Male');",
+									"    pm.expect(jsonData.user).to.have.property('id');",
+									"    pm.expect(jsonData.user.interests).to.equals(\"Coding, Music, Traveling\")",
+									"});",
+									"pm.test('Message Indicates Succesful login', function () {",
+									"    pm.expect(jsonData.message).to.equal('Login successful!');",
+									"})",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"johndoe\",\n  \"password\": \"password123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://matchify-backend-theta.vercel.app/api/login",
+							"protocol": "https",
+							"host": [
+								"matchify-backend-theta",
+								"vercel",
+								"app"
+							],
+							"path": [
+								"api",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "https://postman-echo.com"
+		}
+	]
+}
